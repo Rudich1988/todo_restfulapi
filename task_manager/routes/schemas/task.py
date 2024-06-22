@@ -1,4 +1,4 @@
-from task_manager.app import ma
+#from task_manager.app import ma
 from task_manager.models.tasks import Task
 from marshmallow import Schema, validate, fields
 
@@ -11,7 +11,7 @@ class TaskSchema(Schema):
     updated_at = fields.DateTime(required=False)
 
 
-class TaskAutoSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Task
+#class TaskAutoSchema(ma.SQLAlchemyAutoSchema):
+#    class Meta:
+#        model = Task
     

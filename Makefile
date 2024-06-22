@@ -2,13 +2,13 @@ install:
 	poetry install
 
 db_init:
-	poetry run flask --app task_manager/app:app db init
+	alembic init task_manager/migrations
 
 db_migrate:
-	poetry run flask --app task_manager/app:app db migrate -m "create tables"
+	alembic revision --autogenerate
 
 db_upgrade:
-	poetry run flask --app task_manager/app:app db upgrade
+	alembic upgrade head
 
 dev:
 	poetry run flask --app task_manager/app:app --debug run

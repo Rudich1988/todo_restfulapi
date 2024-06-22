@@ -1,9 +1,10 @@
 from task_manager.models.tasks import Task
-from task_manager.app import db
+#from task_manager.app import db
+from task_manager.db import db_session
 
 
 class TaskRepository:
-    def __init__(self, db_session=db.session):
+    def __init__(self, db_session=db_session):
         self.db_session = db_session
 
     def get_all_tasks(self):
