@@ -1,7 +1,8 @@
 from flask import jsonify, make_response, Blueprint, request, render_template, flash, redirect, url_for
-from flask_login import logout_user, login_required
+from flask_login import logout_user, login_required, current_user
 
 from task_manager.services.task_service import TaskService
+from task_manager.routes.forms.task_forms import TaskCreateForm
 
 
 tasks_bp = Blueprint('tasks_routes', __name__)
@@ -13,24 +14,30 @@ def show_all_tasks():
     return render_template('tasks/show_tasks.html', tasks=tasks)
 
 
-@tasks_bp.route('/tasks', methods=["POST"])
+@tasks_bp.route('/create_task', methods=['GET', 'POST'])
+@login_required
 def create_task():
-    try:
-        task_data = request.json
-        task = TaskService().add_task(task_data)
-    except:
-        return make_response(jsonify({'error': 'Error create task'}), 404)
-    return jsonify(task)
+    form = TaskCreateForm()
+    if request.method == 'POST':
+        try:
+            task_data = request.form.to_dict()
+            task_data['user_id'] = current_user.id
+            TaskService().add_task(task_data)
+            flash('Задача успешно создана', 'success')
+            return redirect(url_for('tasks_routes.show_all_tasks'))
+        except:
+            flash('Не получилось создать задачу')
+            return render_template('tasks/create_task.html', form=form)
+    return render_template('tasks/create_task.html', form=form)
 
 
 @tasks_bp.route('/task/<int:id>', methods=['GET'])
 def get_task(id):
-    #try:
-    task = TaskService().get_task(id)
-    #except:
-     #   return 'нет такой задачи'
-    #return make_response(jsonify({'error': 'Error: task not found'}), 404)
-    #return jsonify(task)
+    try:
+        task = TaskService().get_task(id)
+    except:
+        flash('Запрашиваемой задачи нет', 'error')
+        return render_template('index.html')
     return render_template('tasks/show_task_data.html', task=task)
 
 

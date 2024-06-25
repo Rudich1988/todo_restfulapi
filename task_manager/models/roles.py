@@ -11,3 +11,6 @@ class Role(ModelBase):
     title: Mapped[str] = mapped_column(String(100))
     
     role_users: Mapped[list["User"]] = relationship(back_populates='user_roles', secondary='users_roles')
+
+    def __repr__(self):
+        return f'{self.title}'

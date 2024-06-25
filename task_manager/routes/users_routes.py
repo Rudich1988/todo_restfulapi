@@ -3,7 +3,7 @@ from flask_login import logout_user, login_required
 
 from task_manager.services.user_service import UserService
 from task_manager.routes.forms.user_forms import UserCreateForm, UserLoginForm
-from task_manager.admin import admin_required
+#from task_manager.admin import admin_required
 
 
 users_bp = Blueprint('users_routes', __name__)
