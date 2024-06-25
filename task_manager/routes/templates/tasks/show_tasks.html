@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for category, message in get_flashed_messages(True) %}
+  <div class="alert alert-success" role="alert">
+    {{ message }}
+  </div>
+{% endfor %}
+<main class="flex-grow-1">
+  <div class="container-lg mt-3">
+    <h1>Задачи</h1>   
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover text-nowrap" data-test="urls">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Имя</th>
+              <th>Описание</th>
+              <th>Дата создания</th>
+              <th>Дата изменения</th>
+            </tr>
+          </thead>
+          {% for task in tasks %}
+          <tbody>
+            <td>{{ task.id }}</td>
+            <td>
+              <a href="{{ url_for('tasks_routes.get_task', id=task.id ) }}">
+                {{ task.title }}
+              </a>
+            </td>
+            <td>{{ task.description }}</td>
+            <td>{{ task.created_at }}</td>
+            <td>{{ task.updated_at }}</td>
+          </tbody>
+          {% endfor %}
+        </table>
+      </div>
+  </div>
+</main>
+{% endblock %}

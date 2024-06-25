@@ -755,7 +755,22 @@ markupsafe = "*"
 [package.extras]
 email = ["email-validator"]
 
+[[package]]
+name = "wtforms-sqlalchemy"
+version = "0.4.1"
+description = "SQLAlchemy tools for WTForms"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "WTForms-SQLAlchemy-0.4.1.tar.gz", hash = "sha256:370f52b738527cf6d8ab78d3488afb9342666144da2637e0cf8b5ae522e8a4db"},
+    {file = "WTForms_SQLAlchemy-0.4.1-py3-none-any.whl", hash = "sha256:df3965015b60de172f4b35e691a47d9913d56bb0abb62c620edd04c1376979e3"},
+]
+
+[package.dependencies]
+SQLAlchemy = ">=1.4"
+WTForms = ">=3.1"
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "aaf0ec8152e39cc33032e2387ab72297a84db59f2165d94ffb88d3953425ba67"
+content-hash = "75546d627e04738d1f266a0ab7a59adfbb72f6cdc649cb364c45df1299dd2dcd"

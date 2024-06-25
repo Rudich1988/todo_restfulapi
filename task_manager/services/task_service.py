@@ -20,7 +20,7 @@ class TaskService:
         return self._tasks_schema.dump(tasks)
     
     def get_task(self, task_id):
-        task = self.session.get_task(task_id)
+        task = self.session.get_task(**{'id': task_id})
         return self._task_schema.dump(task)
     
     def add_task(self, data):          

@@ -1,4 +1,5 @@
-from flask import jsonify, make_response, Blueprint, request
+from flask import jsonify, make_response, Blueprint, request, render_template, flash, redirect, url_for
+from flask_login import logout_user, login_required
 
 from task_manager.services.task_service import TaskService
 
@@ -9,7 +10,7 @@ tasks_bp = Blueprint('tasks_routes', __name__)
 @tasks_bp.route('/tasks', methods=['GET'])
 def show_all_tasks():
     tasks = TaskService().get_all_tasks()
-    return jsonify(tasks)
+    return render_template('tasks/show_tasks.html', tasks=tasks)
 
 
 @tasks_bp.route('/tasks', methods=["POST"])
@@ -22,13 +23,15 @@ def create_task():
     return jsonify(task)
 
 
-@tasks_bp.route('/tasks/<int:id>', methods=['GET'])
+@tasks_bp.route('/task/<int:id>', methods=['GET'])
 def get_task(id):
-    try:
-        task = TaskService().get_task(id)
-    except:
-        return make_response(jsonify({'error': 'Error: task not found'}), 404)
-    return jsonify(task)
+    #try:
+    task = TaskService().get_task(id)
+    #except:
+     #   return 'нет такой задачи'
+    #return make_response(jsonify({'error': 'Error: task not found'}), 404)
+    #return jsonify(task)
+    return render_template('tasks/show_task_data.html', task=task)
 
 
 @tasks_bp.route('/tasks/<int:id>', methods=['PUT'])

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<main class="flex-gow-1">
+  {% for category, message in get_flashed_messages(True) %}
+    <div class="alert alert-danger" role="alert">
+      {{ message }}
+    </div>
+  {% endfor %}
+  <div class="container-lg mt-3">
+    <h1>Задача: {{ task.title }}</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-nowrap">
+          <tbody>
+            <tr>
+              <td>ID</td>
+              <td>{{ task.id }}</td>
+            </tr>
+            <tr>
+              <td>Имя</td>
+              <td>{{ task.title }}</td>
+            </tr>
+            <tr>
+              <td>Описание</td>
+              <td>{{ task.description }}</td>
+            </tr>
+            <tr>
+              <td>Дата создания</td>
+              <td>{{ task.created_at }}</td>
+            </tr>
+            <tr>
+              <td>Дата изменения</td>
+              <td>{{ task.updated_at }}</td>
+            </tr>
+          </tbody>
+        </table>
+      <form action="" method="post">
+        <input type="hidden">
+        <!--<input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />-->
+        <input type="submit" value="Удалить задачу"
+        class="btn btn-danger btn-sm" 
+        onclick="return confirm('Вы действительно хотите удалить эту задачу?')">
+    </div>
+  </div>
+</main>
+{% endblock %}

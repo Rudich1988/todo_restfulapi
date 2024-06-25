@@ -1,7 +1,7 @@
 def test_1():
     assert 2 == 2
 
-
+# это в env migrations
 '''
 import os
 
@@ -34,4 +34,16 @@ config.set_main_option("sqlalchemy.url", os.getenv('DATABASE_URL'))
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = ModelBase.metadata
+'''
+
+# это в работе с консолью
+
+'''
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+engine = create_engine('mysql+mysqlconnector://rudi4:password@localhost/task_manager')
+Session = sessionmaker(bind=engine)
+session = Session()
+results = session.query(User).all()
+user = session.add(User(first_name='hjk', last_name='uio', username='hui1', password='morozki1988', email='exampl1e@mail.ru', is_active=1))
 '''

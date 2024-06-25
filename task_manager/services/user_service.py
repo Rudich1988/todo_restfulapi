@@ -1,9 +1,6 @@
-from datetime import datetime as dt
-
-from flask import jsonify, make_response, Blueprint, request, render_template, flash, redirect, url_for
+from flask import url_for
 from itsdangerous import URLSafeTimedSerializer
 from flask_login import login_user
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
 
 from task_manager.repositories.user_repository import UserRepository
@@ -11,6 +8,10 @@ from task_manager.routes.schemas.user import UserSchema
 from task_manager.models.users import User
 from task_manager.config.base import Config
 from task_manager.app import mail
+
+
+from task_manager.models.roles import Role
+from task_manager.db import Session
 
 
 
@@ -59,8 +60,7 @@ class UserService:
             del data['password2']
             del data['submit']
             del data['csrf_token']
-        user = self.session.add_user(**data)
-        self.send_email(user.email)
+        self.session.add_user(**data)
         return data
 
     def login_user(self, user_data):

@@ -1,2 +1,3 @@
 from task_manager.repositories.task_repository import TaskRepository
 from task_manager.repositories.user_repository import UserRepository
+from task_manager.repositories.role_repository import RoleRepository

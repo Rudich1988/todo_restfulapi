@@ -21,12 +21,13 @@ class User(ModelBase, UserMixin):
     username: Mapped[str] = mapped_column(String(100), unique=True)
     email: Mapped[str] = mapped_column(String(100), unique=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), default=False)
+    is_admin: Mapped[bool] = mapped_column(Boolean(), default=False)
     password: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(),
                                                  onupdate=func.now())
 
-    #roles: Mapped[list] = relationship('UserRole', back_populates='users')
+    user_roles: Mapped[list["Role"]] = relationship(back_populates='role_users', secondary='users_roles')
     tasks: Mapped[list["Task"]] = relationship(cascade="all,delete", back_populates='user')
 
 
@@ -38,13 +39,13 @@ class User(ModelBase, UserMixin):
 
 
 
-'''
-class UserRole(ModelBase):
-    __table_name__='user_roles'
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("user.id", on_delete='CASCADE'), unique=True)
-    role_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("role.id", on_delete='CASCADE'), unique=True)
 
-    user = Mapped['User'] = relationship('User', back_populates='roles')
-    user = Mapped['Role'] = relationship('Role', back_populates='users')
-'''
+
+class UsersRoles(ModelBase):
+    __tablename__='users_roles'
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id", ondelete='CASCADE'), primary_key=True)
+    role_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("roles.id", ondelete='CASCADE'), primary_key=True)
+
+    #user = Mapped['User'] = relationship('User', back_populates='roles')
+    #user = Mapped['Role'] = relationship('Role', back_populates='users')

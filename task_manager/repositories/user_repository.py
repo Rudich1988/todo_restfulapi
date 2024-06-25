@@ -12,6 +12,10 @@ class UserRepository:
     def __init__(self, db_session=Session()):
         self.db_session = db_session
 
+    def get_users(self):
+        users = self.db_session.query(User).all()
+        return users
+
     def get_user(self, **kwargs):
         user = self.db_session.query(User).filter_by(**kwargs).first()
         return user

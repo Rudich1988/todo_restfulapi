@@ -1,4 +1,3 @@
-'''
 from datetime import datetime
 
 from sqlalchemy import text, ForeignKey, UniqueConstraint, BigInteger, ForeignKey, String, Text
@@ -11,5 +10,4 @@ class Role(ModelBase):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(100))
     
-    users: Mapped[list] = relationship('User', back_populates='roles')
-'''
+    role_users: Mapped[list["User"]] = relationship(back_populates='user_roles', secondary='users_roles')
