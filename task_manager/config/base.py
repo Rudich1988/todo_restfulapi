@@ -12,6 +12,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     WTF_CSRF_SECRET_KEY = os.getenv('WTF_CSRF_SECRET_KEY')
     SECURITY_PASSWORD_SALT = os.getenv("SECURITY_PASSWORD_SALT", default="very-important")
+    ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', default='truemanbatumi')
 
     MAIL_DEFAULT_SENDER = "noreply@flask.com"
     MAIL_SERVER = "smtp.yandex.com"

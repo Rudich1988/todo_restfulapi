@@ -9,7 +9,7 @@ from task_manager.config.base import Config
 class ModelBase(DeclarativeBase):
     pass
 
-engine = create_engine(Config.DATABASE_URL, echo=True)
+engine = create_engine(Config.DATABASE_URL, echo=False)
 
 Session = sessionmaker(bind=engine)
 

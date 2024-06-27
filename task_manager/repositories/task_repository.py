@@ -18,17 +18,16 @@ class TaskRepository:
     def get_task(self, **kwargs):
         task = self.db_session.query(Task).filter_by(**kwargs)[0]
         return task
-    '''
+    
     def update_task(self, task_id, **kwargs):
-        task = self.get_task(task_id)
+        task = self.get_task(**{'id': task_id})
         for key, value in kwargs.items():
             setattr(task, key, value)
         self.db_session.commit()
         return task
     
-    def delete_task(self, task_id):
-        task = self.get_task(task_id)
+    def delete_task(self, **kwargs):
+        task = self.get_task(**kwargs)
         print(task)
         self.db_session.delete(task)
         self.db_session.commit()
-    '''

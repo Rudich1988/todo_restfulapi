@@ -30,10 +30,12 @@ class TaskService:
         return data
     
     def update_task(self, task_id, data):
-        validate_data = self._task_schema.load(data)
-        task = self.session.update_task(task_id, **validate_data)
+        #validate_data = self._task_schema.load(data)
+        del data['csrf_token']
+        del data['submit']
+        task = self.session.update_task(task_id, **data)
         return self._task_schema.dump(task)
     
     def delete_task(self, task_id):
-        self.session.delete_task(task_id)
+        self.session.delete_task(**{'id': task_id})
         return f'Task id: {task_id} deleted'

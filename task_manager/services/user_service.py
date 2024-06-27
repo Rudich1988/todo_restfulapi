@@ -23,6 +23,10 @@ class UserService:
         self._user_schema = user_schema
         self._users_schema = users_schema
 
+    def get_user(self, user_id):
+        user = self.session.get_user(**{'id': user_id})
+        return self._user_schema.dump(user)
+
     def generate_token(self, email):
         serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
         token = serializer.dumps(email, salt=Config.SECURITY_PASSWORD_SALT)
@@ -31,7 +35,6 @@ class UserService:
     def confirm_token(self, token):
         serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
         email = serializer.loads(token, salt=Config.SECURITY_PASSWORD_SALT)
-        print(email)
         return email
 
     def send_email(self, email):
@@ -56,11 +59,9 @@ class UserService:
     def add_user(self, data):
         if data['password1'] == data['password2']:
             data['password'] = User().get_hash_password(data['password1'])
-            del data['password1']
-            del data['password2']
-            del data['submit']
-            del data['csrf_token']
-        self.session.add_user(**data)
+        data = self._user_schema.dump(data)
+        user = self.session.add_user(**data)
+        self.send_email(user.email)
         return data
 
     def login_user(self, user_data):

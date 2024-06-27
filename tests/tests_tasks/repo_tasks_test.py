@@ -44,6 +44,31 @@ from sqlalchemy.orm import sessionmaker
 engine = create_engine('mysql+mysqlconnector://rudi4:password@localhost/task_manager')
 Session = sessionmaker(bind=engine)
 session = Session()
+from task_manager.models.users import User
 results = session.query(User).all()
 user = session.add(User(first_name='hjk', last_name='uio', username='hui1', password='morozki1988', email='exampl1e@mail.ru', is_active=1))
+'''
+
+
+# versions
+'''
+from werkzeug.security import generate_password_hash
+from sqlalchemy import orm
+
+from task_manager.config.base import Config
+from task_manager.models.users import User
+from task_manager.models.roles import Role
+
+
+admin_password = generate_password_hash(Config.ADMIN_PASSWORD)
+
+'''
+
+'''
+bind = op.get_bind()
+session = orm.Session(bind=bind)
+password = User().get_hash_password(password=Config.ADMIN_PASSWORD)
+user = session.execute(sa.insert(User).values(first_name='my_name', last_name='my_last_name', username='admin', email='admin@mail.ru', is_active=True, is_admin=True, password=password))
+executor = session.execute(sa.insert(Role).values(title='исполнитель'))
+author = session.execute(sa.insert(Role).values(title='заказчик'))
 '''

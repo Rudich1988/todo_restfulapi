@@ -1,18 +1,27 @@
 """empty message
 
-Revision ID: c03c4fc6e5e2
+Revision ID: 827f9aaf9e2b
 Revises: 
-Create Date: 2024-06-24 16:38:35.586153
+Create Date: 2024-06-26 14:56:43.396031
 
 """
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from werkzeug.security import generate_password_hash
+from sqlalchemy import orm
+
+from task_manager.config.base import Config
+from task_manager.models.users import User
+from task_manager.models.roles import Role
+
+
+admin_password = generate_password_hash(Config.ADMIN_PASSWORD)
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'c03c4fc6e5e2'
+revision: str = '827f9aaf9e2b'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -58,6 +67,12 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id', 'user_id', 'role_id')
     )
+    bind = op.get_bind()
+    session = orm.Session(bind=bind)
+    password = User().get_hash_password(password=Config.ADMIN_PASSWORD)
+    user = session.execute(sa.insert(User).values(first_name='my_name', last_name='my_last_name', username='admin', email='admin@mail.ru', is_active=True, is_admin=True, password=password))
+    executor = session.execute(sa.insert(Role).values(title='исполнитель'))
+    author = session.execute(sa.insert(Role).values(title='заказчик'))
     # ### end Alembic commands ###
 
 

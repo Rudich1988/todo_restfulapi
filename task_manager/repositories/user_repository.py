@@ -17,11 +17,12 @@ class UserRepository:
         return users
 
     def get_user(self, **kwargs):
-        user = self.db_session.query(User).filter_by(**kwargs).first()
+        user = self.db_session.query(User).filter_by(**kwargs)[0]
         return user
 
     def add_user(self, **kwargs):
-        user = User(**kwargs)
+        user_object = User(**kwargs)
+        user = self.db_session.merge(user_object)
         self.db_session.add(user)
         self.db_session.commit()
         return user

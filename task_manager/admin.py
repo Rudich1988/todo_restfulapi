@@ -39,11 +39,7 @@ def unauthorized_callback():
 
 
 
-
-
-
-
-
+'''
 def admin_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
@@ -55,3 +51,4 @@ def admin_required(func):
             return redirect(url_for('users_routes.login'))
         return func(*args, **kwargs)
     return decorated_function
+'''

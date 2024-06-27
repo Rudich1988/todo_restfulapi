@@ -5,13 +5,13 @@ from wtforms_sqlalchemy.fields import QuerySelectMultipleField
 
 from task_manager.repositories.role_repository import RoleRepository
 from task_manager.models.roles import Role
-from task_manager.db import Session
+from task_manager.db import Session, db_session
 
 
-ROLES = Session().query(Role).all()
+#ROLES = Session().query(Role).all()
 
 
-#ROLES = RoleRepository().get_roles()
+ROLES = RoleRepository().get_roles()
 
 
 class UserCreateForm(FlaskForm):
@@ -31,8 +31,7 @@ class UserCreateForm(FlaskForm):
                               validators=[DataRequired(), Length(6, 200),
                                           EqualTo('password1',
                                                   message='Пароли не совпадают')])
-    user_roles = QuerySelectMultipleField('Roles', query_factory=lambda: ROLES, get_label='title',
-                                          allow_blank=True)
+    user_roles = QuerySelectMultipleField('Roles', query_factory=lambda: ROLES, get_label='title')
     submit = SubmitField('Создать', render_kw={"class": "btn btn"})
 
 

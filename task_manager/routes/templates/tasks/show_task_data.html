@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% from 'bootstrap5/form.html' import render_form %}
+
 
 {% block content %}
 <main class="flex-gow-1">
@@ -26,6 +28,10 @@
               <td>{{ task.description }}</td>
             </tr>
             <tr>
+              <td>Автор</td>
+              <td>{{ author }}</td>
+            </tr>
+            <tr>
               <td>Дата создания</td>
               <td>{{ task.created_at }}</td>
             </tr>
@@ -35,12 +41,18 @@
             </tr>
           </tbody>
         </table>
-      <form action="" method="post">
-        <input type="hidden">
-        <!--<input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />-->
-        <input type="submit" value="Удалить задачу"
-        class="btn btn-danger btn-sm" 
-        onclick="return confirm('Вы действительно хотите удалить эту задачу?')">
+        <a href="{{ url_for('tasks_routes.update_task', id=task.id)}}" class="btn btn-primary btn-sm" style="margin-bottom: 10px;">Изменить задачу</a>            
+        <form method="POST" action="{{ url_for('tasks_routes.delete_task', id=task.id)}}">
+          {{ form.hidden_tag() }}
+          <input type="submit" value="Удалить задачу" class="btn btn-danger btn-sm" onclick="confirmDelete()">
+        </form>     
+        <script>
+          function confirmDelete() {
+              if (confirm("Вы уверены, что хотите удалить задачу?")) {
+                  document.forms[0].submit();
+              }
+          }
+        </script>
     </div>
   </div>
 </main>

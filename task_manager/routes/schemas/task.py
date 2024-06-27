@@ -9,6 +9,7 @@ class TaskSchema(Schema):
     description = fields.Str(required=False)
     created_at = fields.DateTime(required=False)
     updated_at = fields.DateTime(required=False)
+    user_id = fields.Integer()
 
 
 #class TaskAutoSchema(ma.SQLAlchemyAutoSchema):

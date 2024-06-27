@@ -25,9 +25,6 @@ def login():
     return render_template('/users/login.html', form=form)
 
 
-from flask_admin import AdminIndexView
-
-
 @users_bp.route('/logout')
 @login_required
 def logout():
@@ -36,25 +33,23 @@ def logout():
     return render_template('index.html')
 
 
-
 @users_bp.route('/registration', methods=['GET', 'POST'])
 def registration():
     form = UserCreateForm()
     if request.method == 'POST':
         if form.validate_on_submit():
-            try:
-                user_data = request.form.to_dict()
-                user_data['user_roles'] = form.user_roles.data
-                UserService().add_user(user_data)
-                return render_template('users/email_confirmation.html')
-            except:
-                flash('Пользователь с таким именем или email уже есть.', 'error')
-                return render_template('users/registration.html', form=form)
+            #try:
+            user_data = request.form.to_dict()
+            user_data['user_roles'] = form.user_roles.data
+            UserService().add_user(user_data)
+            return render_template('users/email_confirmation.html')
+            #except:
+             #   flash('Пользователь с таким именем или email уже есть.', 'error')
+              #  return render_template('users/registration.html', form=form)
     return render_template('users/registration.html', form=form)
 
 
 @users_bp.route('/confirm_email/<token>')
-@login_required
 def confirm_email(token):
     try:
         UserService().confirm_email(token)

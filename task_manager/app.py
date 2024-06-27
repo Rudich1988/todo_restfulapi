@@ -3,6 +3,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
+from flask_wtf.csrf import CSRFProtect
 
 from task_manager.config.base import Config
 from task_manager.db import Session
@@ -10,6 +11,7 @@ from task_manager.db import Session
 
 app = Flask(__name__, template_folder='routes/templates')
 app.config.from_object(Config)
+csrf = CSRFProtect(app)
 
 login_manager = LoginManager(app)
 mail = Mail(app)
