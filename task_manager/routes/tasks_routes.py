@@ -25,15 +25,15 @@ def create_task():
     form = TaskCreateForm()
     if request.method == 'POST':
         if form.validate_on_submit():
-            try:
-                task_data = request.form.to_dict()
-                task_data['user_id'] = current_user.id
-                TaskService().add_task(task_data)
-                flash('Задача успешно создана', 'success')
-                return redirect(url_for('tasks_routes.show_all_tasks'))
-            except:
-                flash('Не получилось создать задачу')
-                return render_template('tasks/create_task.html', form=form)
+            #try:
+            task_data = request.form.to_dict()
+            task_data['user_id'] = current_user.id
+            TaskService().add_task(task_data)
+            flash('Задача успешно создана', 'success')
+            return redirect(url_for('tasks_routes.show_all_tasks'))
+            #except:
+             #   flash('Не получилось создать задачу')
+              #  return render_template('tasks/create_task.html', form=form)
     return render_template('tasks/create_task.html', form=form)
 
 

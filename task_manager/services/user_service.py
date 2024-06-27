@@ -4,7 +4,7 @@ from flask_login import login_user
 from flask_mail import Message
 
 from task_manager.repositories.user_repository import UserRepository
-from task_manager.routes.schemas.user import UserSchema
+from task_manager.routes.schemas.user import UserLoginSchema, UserRegistrationSchema
 from task_manager.models.users import User
 from task_manager.config.base import Config
 from task_manager.app import mail
@@ -17,11 +17,13 @@ from task_manager.db import Session
 
 class UserService:
     def __init__(self, session = UserRepository(),
-                 user_schema = UserSchema(),
-                 users_schema = UserSchema(many=True)):
+                 user_login_schema = UserLoginSchema(),
+                 user_schema = UserRegistrationSchema(),
+                 users_schema = UserRegistrationSchema(many=True)):
         self.session = session
         self._user_schema = user_schema
         self._users_schema = users_schema
+        self._login_schema = user_login_schema
 
     def get_user(self, user_id):
         user = self.session.get_user(**{'id': user_id})
@@ -65,12 +67,9 @@ class UserService:
         return data
 
     def login_user(self, user_data):
-        del user_data['csrf_token']
-        del user_data['submit']
-        password = user_data['password']
-        del user_data['password']
-        user = self.session.get_user(**user_data)
-        if user.check_password(password) and user.is_active:
+        data = self._login_schema.dump(user_data)
+        user = self.session.get_user(**data)
+        if user.check_password(user_data['password']) and user.is_active:
             current_user = user
         login_user(current_user)
         return user_data

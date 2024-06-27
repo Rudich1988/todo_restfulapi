@@ -23,17 +23,14 @@ class TaskService:
         task = self.session.get_task(**{'id': task_id})
         return self._task_schema.dump(task)
     
-    def add_task(self, data):          
-        del data['csrf_token']
-        del data['submit']
-        self.session.create_task(**data)
+    def add_task(self, data):
+        task_data = self._task_schema.dump(data)
+        self.session.create_task(**task_data)
         return data
     
     def update_task(self, task_id, data):
-        #validate_data = self._task_schema.load(data)
-        del data['csrf_token']
-        del data['submit']
-        task = self.session.update_task(task_id, **data)
+        task_data = self._task_schema.dump(data)
+        task = self.session.update_task(task_id, **task_data)
         return self._task_schema.dump(task)
     
     def delete_task(self, task_id):
