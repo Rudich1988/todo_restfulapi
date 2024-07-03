@@ -2,7 +2,8 @@ from flask import jsonify, make_response, Blueprint, request, render_template, f
 from flask_login import logout_user, login_required
 
 from task_manager.services.user_service import UserService
-from task_manager.routes.forms.user_forms import UserCreateForm, UserLoginForm
+from task_manager.routes.forms.user_forms import UserCreateForm, UserLoginForm, UserDeleteForm
+from task_manager.repositories.user_repository import UserRepository
 #from task_manager.admin import admin_required
 
 
@@ -47,6 +48,19 @@ def registration():
              #   flash('Пользователь с таким именем или email уже есть.', 'error')
               #  return render_template('users/registration.html', form=form)
     return render_template('users/registration.html', form=form)
+
+
+@users_bp.route('/profile/<int:id>')
+@login_required
+def get_profile(id):
+    form = UserDeleteForm()
+    #try:
+    user = UserRepository().get_user(**{'id': id})
+    print(user)
+    return render_template('users/profile.html', user=user, form=form)
+    #except:
+     #   flash('Такого пользователя нет')
+      #  return render_template('index.html')
 
 
 @users_bp.route('/confirm_email/<token>')

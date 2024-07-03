@@ -14,4 +14,4 @@ class UserRegistrationSchema(Schema):
 
 
 class UserLoginSchema(Schema):
-    pass
+    username = fields.Str(required=True, validate=validate.Length(min=1))

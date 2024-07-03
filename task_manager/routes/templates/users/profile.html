@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content%}
+<main class="flex-gow-1">
+    {% for category, message in get_flashed_messages(True) %}
+      <div class="alert alert-danger" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+    <div class="container-lg mt-3">
+      <h1>Задача: {{ user.first_name }} {{ user.last_name }}</h1>
+      <div class="table-responsive">
+          <table class="table table-bordered table-hover text-nowrap">
+            <tbody>
+              <tr>
+                <td>ID</td>
+                <td>{{ user.id }}</td>
+              </tr>
+              <tr>
+                <td>Имя</td>
+                <td>{{ user.first_name }}</td>
+              </tr>
+              <tr>
+                <td>Фамилия</td>
+                <td>{{ user.last_name }}</td>
+              </tr>
+              <tr>
+                <td>Никнейм</td>
+                <td>{{ user.username }}</td>
+              </tr>
+              <tr>
+                <td>Email</td>
+                <td>{{ user.email }}</td>
+              </tr>
+              <tr>
+              <tr>
+                <td>Дата создания</td>
+                <td>{{ user.created_at }}</td>
+              </tr>
+              <tr>
+                <td>Дата изменения</td>
+                <td>{{ user.updated_at }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <input type="submit" value="Удалить пользователя" class="btn btn-danger btn-sm" onclick="confirmDelete()">
+          </form>     
+          <script>
+            function confirmDelete() {
+                if (confirm("Вы уверены, что хотите удалить задачу?")) {
+                    document.forms[0].submit();
+                }
+            }
+          </script><br>
+          <h1>Ваши задачи</h1>
+          <div>
+            <table class="table table-bordered table-hover mt-2" data-test="checks">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Название задачи</th>
+                <th>Дата создания</th>
+                <th>Дата изменения</th>
+                <th>Создатель / Исполнитель</th>
+              </tr>
+            </thead>
+            {% if user.tasks %}
+              {% for task in user.tasks %}
+                <tbody>
+                  <td>{{ task.id }}</td>
+                  <td><a href="{{ url_for('tasks_routes.get_task', id=task.id) }}">{{ task.title }}</a></td>
+                  <td>{{ task.created_at }}</td>
+                  <td>{{ task.updated_at }}</td>
+                  {% if user.id == task.author %}
+                    <td>Создатель</td>
+                  {% else %}
+                    <td>Исполнитель</td>
+                  {% endif %}
+                </tbody>
+              {% endfor %}
+            {% endif %}
+          </table>
+          </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}

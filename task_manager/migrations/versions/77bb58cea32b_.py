@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 827f9aaf9e2b
+Revision ID: 77bb58cea32b
 Revises: 
-Create Date: 2024-06-26 14:56:43.396031
+Create Date: 2024-07-01 16:58:45.989723
 
 """
 from typing import Sequence, Union
@@ -21,7 +21,7 @@ admin_password = generate_password_hash(Config.ADMIN_PASSWORD)
 
 
 # revision identifiers, used by Alembic.
-revision: str = '827f9aaf9e2b'
+revision: str = '77bb58cea32b'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -40,6 +40,7 @@ def upgrade() -> None:
     sa.Column('last_name', sa.String(length=100), nullable=False),
     sa.Column('username', sa.String(length=100), nullable=False),
     sa.Column('email', sa.String(length=100), nullable=False),
+    sa.Column('about_me', sa.Text(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('is_admin', sa.Boolean(), nullable=False),
     sa.Column('password', sa.Text(), nullable=False),
@@ -55,8 +56,10 @@ def upgrade() -> None:
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
-    sa.Column('user_id', sa.BigInteger(), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+    sa.Column('author', sa.BigInteger(), nullable=False),
+    sa.Column('executor', sa.BigInteger(), nullable=True),
+    sa.ForeignKeyConstraint(['author'], ['users.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['executor'], ['users.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('users_roles',

@@ -27,7 +27,7 @@ def create_task():
         if form.validate_on_submit():
             #try:
             task_data = request.form.to_dict()
-            task_data['user_id'] = current_user.id
+            task_data['author'] = current_user.id
             TaskService().add_task(task_data)
             flash('Задача успешно создана', 'success')
             return redirect(url_for('tasks_routes.show_all_tasks'))
@@ -43,7 +43,7 @@ def get_task(id):
     form = DeleteForm()
     try:
         task = TaskService().get_task(id)
-        author = UserService().get_user(task['user_id'])['username']
+        author = UserService().get_user(task['author'])['username']
         return render_template('tasks/show_task_data.html',
                                task=task, form=form, author=author)
     except:
@@ -63,7 +63,7 @@ def update_task(id):
     if request.method == 'POST':
         if form.validate_on_submit():
             try:
-                if current_user.id == task.user_id:
+                if current_user.id == task.author:
                     data = request.form.to_dict()
                     TaskService().update_task(id, data)
                     flash('Задача успешно обновлена', 'success')
@@ -80,7 +80,7 @@ def update_task(id):
 def delete_task(id):
     try:
         task = TaskRepository().get_task(**{'id': id})
-        if current_user.id == task.user_id:
+        if current_user.id == task.author:
             TaskService().delete_task(id)
             flash('Задача успешно удалена', 'success')
             return redirect(url_for('tasks_routes.show_all_tasks'))

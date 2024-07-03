@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField
+from wtforms import StringField, SubmitField, PasswordField, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
 from wtforms_sqlalchemy.fields import QuerySelectMultipleField
 
@@ -23,6 +23,7 @@ class UserCreateForm(FlaskForm):
                            render_kw={"placeholder": "Введите имя пользователя"})
     email = StringField("Email",  validators=[DataRequired(), Email(message='Некорректный email')],
                         render_kw={"placeholder": "Введите адрес электронной почты"})
+    about_me = TextAreaField('Обо мне', render_kw={"placeholder": "Расскажите о себе"})
     password1 = PasswordField('Пароль',
                               render_kw={"placeholder": "Введите пароль"},
                               validators=[DataRequired(), Length(6, 200)])
@@ -43,3 +44,8 @@ class UserLoginForm(FlaskForm):
                              validators=[DataRequired(), Length(1, 200)])
     submit = SubmitField('Войти', render_kw={"class": "btn btn"})
     
+
+class UserDeleteForm(FlaskForm):
+    submit = SubmitField('Удалить', render_kw={"class": "btn btn"})
+
+
