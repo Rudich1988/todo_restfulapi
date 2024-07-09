@@ -23,13 +23,13 @@ class User(ModelBase, UserMixin):
     email: Mapped[str] = mapped_column(String(100), unique=True)
     about_me: Mapped[str] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), default=False)
-    is_admin: Mapped[bool] = mapped_column(Boolean(), default=False)
+    #is_admin: Mapped[bool] = mapped_column(Boolean(), default=False)
     password: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(),
                                                  onupdate=func.now())
-
-    user_roles: Mapped["Role"] = relationship(back_populates='role_users', secondary='users_roles')
+    
+    user_roles: Mapped[list["Role"]] = relationship(back_populates='role_users', secondary='users_roles')
     #task_author: Mapped["Task"] = relationship(back_populates='user', foreign_keys='author', cascade="all,delete")
     #task_executor: Mapped["Task"] = relationship(back_populates='user')#, foreign_keys='executor')
 

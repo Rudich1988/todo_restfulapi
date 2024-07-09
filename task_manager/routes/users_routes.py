@@ -1,8 +1,8 @@
 from flask import jsonify, make_response, Blueprint, request, render_template, flash, redirect, url_for
-from flask_login import logout_user, login_required
+from flask_login import logout_user, login_required, current_user
 
 from task_manager.services.user_service import UserService
-from task_manager.routes.forms.user_forms import UserCreateForm, UserLoginForm, UserDeleteForm
+from task_manager.routes.forms.user_forms import UserCreateForm, UserLoginForm, UserDeleteForm, UserUpdateForm
 from task_manager.repositories.user_repository import UserRepository
 #from task_manager.admin import admin_required
 
@@ -56,11 +56,50 @@ def get_profile(id):
     form = UserDeleteForm()
     #try:
     user = UserRepository().get_user(**{'id': id})
-    print(user)
     return render_template('users/profile.html', user=user, form=form)
     #except:
      #   flash('Такого пользователя нет')
       #  return render_template('index.html')
+
+
+@users_bp.route('/update_user/<int:id>', methods=['GET', 'POST'])
+@login_required
+def update_user(id):
+    try:
+        user = UserRepository().get_user(**{'id': id})
+        form = UserUpdateForm(obj=user)
+    except:
+        flash('Запрашиваемого пользователя нет', 'error')
+        return render_template('index.html')
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            try:
+                if current_user.id == user.id:
+                    data = request.form.to_dict()
+                    UserService().update_user(id, data)
+                    flash('Пользователь успешно обновлен', 'success')
+                    return redirect(url_for('users_routes.get_profile', id=id))
+                flash('Невозможно изменить пользователя', 'error')
+                return redirect(url_for('users_routes.get_profile', id=id))
+            except:
+                flash('Не удалось изменить данные пользователя', 'error')
+                return render_template('users/profile.html', form=form, id=id)
+    return render_template('users/update_user.html', form=form, id=id)
+
+
+@users_bp.route('/delete_user/<int:id>', methods=['POST'])
+def delete_user(id):
+    #try:
+    user = UserRepository().get_user(**{'id': id})
+    if current_user.id == user.id:
+        UserService().delete_user(id)
+        flash('Пользователь успешно удален', 'success')
+        return redirect(url_for('users_routes.login'))
+    flash('Невозможно удалить пользователя', 'error')
+    return redirect(url_for('tasks_routes.show_all_tasks'))
+    #except:
+     #   flash('Запрашиваемого пользователя нет', 'error')
+      #  return redirect(url_for('tasks_routes.show_all_tasks'))
 
 
 @users_bp.route('/confirm_email/<token>')

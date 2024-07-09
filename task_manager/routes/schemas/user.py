@@ -1,5 +1,6 @@
-from task_manager.models.users import User
 from marshmallow import Schema, validate, fields
+
+from task_manager.models.users import User
 
 
 class UserRegistrationSchema(Schema):
@@ -15,3 +16,13 @@ class UserRegistrationSchema(Schema):
 
 class UserLoginSchema(Schema):
     username = fields.Str(required=True, validate=validate.Length(min=1))
+
+
+class UserUpdateSchema(Schema):
+    id = fields.Int()
+    first_name = fields.Str(required=True, validate=validate.Length(min=1))
+    last_name = fields.Str(required=True, validate=validate.Length(min=1))
+    username = fields.Str(required=True, validate=validate.Length(min=1))
+    email = fields.Email(required=True)
+    about_me = fields.Str(required=False)
+

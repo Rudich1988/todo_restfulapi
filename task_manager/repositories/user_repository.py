@@ -1,5 +1,5 @@
 from task_manager.models.users import User
-from task_manager.db import Session
+from task_manager.db import Session, db_session as db
 from task_manager.app import login_manager
 
 
@@ -9,7 +9,7 @@ def user_loader(user_id):
 
 
 class UserRepository:
-    def __init__(self, db_session=Session()):
+    def __init__(self, db_session=db()):
         self.db_session = db_session
 
     def get_users(self):
@@ -33,3 +33,9 @@ class UserRepository:
             setattr(user, key, value)
         self.db_session.commit()
         return user
+    
+    def delete_user(self, **kwargs):
+        user = self.get_user(**kwargs)
+        self.db_session.delete(user)
+        self.db_session.commit()
+

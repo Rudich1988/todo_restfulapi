@@ -4,6 +4,7 @@ from flask_mail import Mail
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_wtf.csrf import CSRFProtect
+#from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required, roles_required
 
 from task_manager.config.base import Config
 from task_manager.db import Session
@@ -33,3 +34,6 @@ admin = Admin(app, index_view=MyAdminIndexView())
 admin.add_view(UserView(User, Session()))
 admin.add_view(RoleView(Role, Session()))
 admin.add_view(TaskView(Task,Session()))
+
+#user_datastore = SQLAlchemyUserDatastore(Session, User, Role)
+#security = Security(app, user_datastore)

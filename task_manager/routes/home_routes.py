@@ -1,5 +1,4 @@
-from flask import jsonify, make_response, Blueprint, request, render_template, redirect, url_for, flash
-
+from flask import Blueprint, render_template
 from flask_wtf import CSRFProtect
 from flask_bootstrap import Bootstrap5
 

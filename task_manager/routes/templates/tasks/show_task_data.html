@@ -29,7 +29,11 @@
             </tr>
             <tr>
               <td>Автор</td>
-              <td>{{ author }}</td>
+              <td>{{ task.author_1.username }}</td>
+            </tr>
+            <tr>
+              <td>Исполнитель</td>
+              <td>{{ task.executor_2.username }}</td>
             </tr>
             <tr>
               <td>Дата создания</td>
@@ -38,6 +42,10 @@
             <tr>
               <td>Дата изменения</td>
               <td>{{ task.updated_at }}</td>
+            </tr>
+            <tr>
+              <td>Статус</td>
+              <td>{{ task.status.title }}</td>
             </tr>
           </tbody>
         </table>

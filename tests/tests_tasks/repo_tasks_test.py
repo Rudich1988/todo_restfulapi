@@ -1,5 +1,4 @@
-def test_1():
-    assert 2 == 2
+
 
 # это в env migrations
 '''
@@ -58,6 +57,7 @@ from sqlalchemy import orm
 from task_manager.config.base import Config
 from task_manager.models.users import User
 from task_manager.models.roles import Role
+from task_manager.models.statuses import Status
 
 
 admin_password = generate_password_hash(Config.ADMIN_PASSWORD)
@@ -71,4 +71,7 @@ password = User().get_hash_password(password=Config.ADMIN_PASSWORD)
 user = session.execute(sa.insert(User).values(first_name='my_name', last_name='my_last_name', username='admin', email='admin@mail.ru', is_active=True, is_admin=True, password=password))
 executor = session.execute(sa.insert(Role).values(title='исполнитель'))
 author = session.execute(sa.insert(Role).values(title='заказчик'))
+status1 = session.execute(sa.insert(Status).values(title='свободна'))
+status2 = session.execute(sa.insert(Status).values(title='в работе'))
+status3 = session.execute(sa.insert(Status).values(title='завершена'))
 '''

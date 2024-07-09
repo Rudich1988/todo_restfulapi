@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 77bb58cea32b
+Revision ID: fbb5263b9e03
 Revises: 
-Create Date: 2024-07-01 16:58:45.989723
+Create Date: 2024-07-08 17:38:04.022286
 
 """
 from typing import Sequence, Union
@@ -13,15 +13,16 @@ from werkzeug.security import generate_password_hash
 from sqlalchemy import orm
 
 from task_manager.config.base import Config
-from task_manager.models.users import User
+from task_manager.models.users import User, UsersRoles
 from task_manager.models.roles import Role
+from task_manager.models.statuses import Status
 
 
 admin_password = generate_password_hash(Config.ADMIN_PASSWORD)
 
 
 # revision identifiers, used by Alembic.
-revision: str = '77bb58cea32b'
+revision: str = 'fbb5263b9e03'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -34,6 +35,11 @@ def upgrade() -> None:
     sa.Column('title', sa.String(length=100), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('statuses',
+    sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
+    sa.Column('title', sa.String(length=100), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('users',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
     sa.Column('first_name', sa.String(length=100), nullable=False),
@@ -42,7 +48,6 @@ def upgrade() -> None:
     sa.Column('email', sa.String(length=100), nullable=False),
     sa.Column('about_me', sa.Text(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
-    sa.Column('is_admin', sa.Boolean(), nullable=False),
     sa.Column('password', sa.Text(), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
@@ -56,10 +61,12 @@ def upgrade() -> None:
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+    sa.Column('status_id', sa.BigInteger(), nullable=False),
     sa.Column('author', sa.BigInteger(), nullable=False),
     sa.Column('executor', sa.BigInteger(), nullable=True),
     sa.ForeignKeyConstraint(['author'], ['users.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['executor'], ['users.id'], ondelete='SET NULL'),
+    sa.ForeignKeyConstraint(['status_id'], ['statuses.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('users_roles',
@@ -73,9 +80,35 @@ def upgrade() -> None:
     bind = op.get_bind()
     session = orm.Session(bind=bind)
     password = User().get_hash_password(password=Config.ADMIN_PASSWORD)
-    user = session.execute(sa.insert(User).values(first_name='my_name', last_name='my_last_name', username='admin', email='admin@mail.ru', is_active=True, is_admin=True, password=password))
+    status1 = session.execute(sa.insert(Status).values(title='свободна'))
+    status2 = session.execute(sa.insert(Status).values(title='в работе'))
+    status3 = session.execute(sa.insert(Status).values(title='завершена'))
     executor = session.execute(sa.insert(Role).values(title='исполнитель'))
     author = session.execute(sa.insert(Role).values(title='заказчик'))
+    admin = session.execute(sa.insert(Role).values(title='админ'))
+    user = session.execute(sa.insert(User).values(first_name='my_name', last_name='my_last_name', username='admin', email='admin@mail.ru', is_active=True, password=password))
+    admin_user_id = user.inserted_primary_key[0]
+    admin_role_id = admin.inserted_primary_key[0]
+    author_role_id = author.inserted_primary_key[0]
+    executor_role_id = executor.inserted_primary_key[0]
+    op.execute(
+        sa.insert(UsersRoles).values(
+            user_id=admin_user_id,
+            role_id=admin_role_id
+        )
+    )
+    op.execute(
+        sa.insert(UsersRoles).values(
+            user_id=admin_user_id,
+            role_id=author_role_id
+        )
+    )
+    op.execute(
+        sa.insert(UsersRoles).values(
+            user_id=admin_user_id,
+            role_id=executor_role_id
+        )
+    )
     # ### end Alembic commands ###
 
 
@@ -84,5 +117,6 @@ def downgrade() -> None:
     op.drop_table('users_roles')
     op.drop_table('tasks')
     op.drop_table('users')
+    op.drop_table('statuses')
     op.drop_table('roles')
     # ### end Alembic commands ###

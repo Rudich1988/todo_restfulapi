@@ -17,7 +17,6 @@ flask-marshmallow = "^1.2.1"
 marshmallow-sqlalchemy = "^1.0.0"
 marshmallow = "^3.21.2"
 sqlalchemy = "^2.0.30"
-pytest = "^8.2.1"
 alembic = "^1.13.1"
 bootstrap-flask = "^2.4.0"
 flask-wtf = "^1.2.1"
@@ -28,8 +27,10 @@ flask-mail = "^0.10.0"
 email-validator = "^2.2.0"
 wtforms = "^3.1.2"
 wtforms-sqlalchemy = "^0.4.1"
-flask-security = "^3.0.0"
 
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.10.1"
 
 [build-system]
 requires = ["poetry-core"]

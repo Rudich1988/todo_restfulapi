@@ -28,6 +28,8 @@
               <th>Описание</th>
               <th>Дата создания</th>
               <th>Дата изменения</th>
+              <th>Статус</th>
+              <th></th>
             </tr>
           </thead>
           {% for task in tasks %}
@@ -41,6 +43,15 @@
             <td>{{ task.description }}</td>
             <td>{{ task.created_at }}</td>
             <td>{{ task.updated_at }}</td>
+            <td>{{ task.status.title }}</td>
+            <td>
+                <form id="postForm" action="{{ url_for('tasks_routes.execute_task', id=task.id)}}" method="post">
+                  {{ form.hidden_tag() }}
+                  <input type="submit" value="Взять задачу" class="btn btn-danger btn-sm">
+                    <!-- Здесь могут быть скрытые поля, если требуется передача данных -->
+                    <!-- <input type="hidden" name="key" value="value"> -->
+                </form>
+            </td>
           </tbody>
           {% endfor %}
         </table>

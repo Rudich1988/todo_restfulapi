@@ -12,3 +12,6 @@ db_upgrade:
 
 dev:
 	poetry run flask --app task_manager/app:app --debug run
+
+mypy:
+	mypy task_manager

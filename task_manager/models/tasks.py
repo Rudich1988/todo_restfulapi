@@ -14,12 +14,11 @@ class Task(ModelBase):
     description: Mapped[str] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(),
-                                                 onupdate=func.now())   
+                                                 onupdate=func.now()) 
+    status_id: Mapped[int] = mapped_column(ForeignKey("statuses.id"))  
     author: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete='CASCADE'))
     executor: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete='SET NULL'), nullable=True)
-
+    
     author_1: Mapped['User'] = relationship(foreign_keys=[author], backref='task_author')
-    executor_2: Mapped['User'] = relationship(foreign_keys=[executor], backref='task_executor') 
-
-
-    #user: Mapped['User'] = relationship(back_populates='tasks', foreign_keys=[author, executor])
+    executor_2: Mapped['User'] = relationship(foreign_keys=[executor], backref='task_executor')
+    status: Mapped['Status'] = relationship(backref='tasks')

@@ -25,7 +25,9 @@ class MyAdminIndexView(AdminIndexView):
         super(MyAdminIndexView, self).__init__(**kwargs)
 
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.is_admin
+        if current_user.user_roles:
+            return current_user.is_authenticated and 'админ' == current_user.user_roles[0].title#current_user.is_admin
+        return False
     
     def inaccessible_callback(self, name, **kwargs):
         flash('У Вас нет прав администратора', 'error')
@@ -35,7 +37,7 @@ class MyAdminIndexView(AdminIndexView):
 @login_manager.unauthorized_handler
 def unauthorized_callback():
     flash('Чтобы получить доступ к этой странице, пожалуйста, залогинтесь', 'info')
-    return redirect(url_for('users_routes.login'))  # Здесь 'login' - имя вашего маршрута для страницы входа
+    return redirect(url_for('users_routes.login'))
 
 
 

@@ -1,9 +1,9 @@
 from task_manager.models.tasks import Task
-from task_manager.db import Session
+from task_manager.db import Session, db_session as db
 
 
 class TaskRepository:
-    def __init__(self, db_session=Session()):
+    def __init__(self, db_session=db()):
         self.db_session = db_session
 
     def get_all_tasks(self):
@@ -28,6 +28,5 @@ class TaskRepository:
     
     def delete_task(self, **kwargs):
         task = self.get_task(**kwargs)
-        print(task)
         self.db_session.delete(task)
         self.db_session.commit()
