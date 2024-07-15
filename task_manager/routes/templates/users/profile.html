@@ -57,16 +57,7 @@
           <form method="POST" action="{{ url_for('users_routes.delete_user', id=user.id)}}">
             {{ form.hidden_tag() }}
             <input type="submit" value="Удалить пользователя" class="btn btn-danger btn-sm" onclick="confirmDelete()">
-          </form>     
-          <script>
-            function confirmDelete(event) {
-                if (!confirm("Вы уверены, что хотите удалить пользователя?")) {
-                    event.preventDefault(); // Отменяем стандартное поведение клика по кнопке submit
-                    return false; // Возвращаем false, чтобы форма не отправлялась
-                }
-                return true; // Возвращаем true, чтобы форма отправилась
-            }
-        </script>
+          </form>
           {% if user.task_author %}
           <h1>Автор задач</h1>
           <div>

@@ -8,10 +8,14 @@ from flask_wtf.csrf import CSRFProtect
 
 from task_manager.config.base import Config
 from task_manager.db import Session
+from flask_socketio import SocketIO
 
 
 app = Flask(__name__, template_folder='routes/templates')
 app.config.from_object(Config)
+
+socketio = SocketIO(app)
+
 csrf = CSRFProtect(app)
 
 login_manager = LoginManager(app)
@@ -20,6 +24,7 @@ mail = Mail(app)
 from task_manager.routes.tasks_routes import *
 from task_manager.routes.users_routes import *
 from task_manager.routes.home_routes import *
+
 
 app.register_blueprint(home_bp)
 app.register_blueprint(tasks_bp)

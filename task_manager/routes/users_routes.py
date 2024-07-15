@@ -1,10 +1,12 @@
 from flask import jsonify, make_response, Blueprint, request, render_template, flash, redirect, url_for
 from flask_login import logout_user, login_required, current_user
+from flask_socketio import emit
 
 from task_manager.services.user_service import UserService
 from task_manager.routes.forms.user_forms import UserCreateForm, UserLoginForm, UserDeleteForm, UserUpdateForm
 from task_manager.repositories.user_repository import UserRepository
-#from task_manager.admin import admin_required
+from task_manager.app import socketio
+from task_manager.repositories.task_repository import TaskRepository
 
 
 users_bp = Blueprint('users_routes', __name__)
@@ -111,4 +113,3 @@ def confirm_email(token):
     except:
         flash('Не удалось активировать Вашу учётную запись', 'error')
         return redirect(url_for('users_routes.login'))
-

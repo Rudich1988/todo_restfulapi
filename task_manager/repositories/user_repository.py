@@ -1,5 +1,5 @@
 from task_manager.models.users import User
-from task_manager.db import Session, db_session as db
+from task_manager.db import Session, db_session as db_s
 from task_manager.app import login_manager
 
 
@@ -7,9 +7,9 @@ from task_manager.app import login_manager
 def user_loader(user_id):
     return Session().query(User).get(user_id)
 
-
+'''
 class UserRepository:
-    def __init__(self, db_session=db()):
+    def __init__(self, db_session=Session()):
         self.db_session = db_session
 
     def get_users(self):
@@ -38,4 +38,40 @@ class UserRepository:
         user = self.get_user(**kwargs)
         self.db_session.delete(user)
         self.db_session.commit()
+'''
 
+class UserRepository:
+    def __init__(self, db_session=db_s):
+        self.db_session = db_session
+
+    def get_users(self):
+        with self.db_session() as db:
+            users = db.query(User).all()
+        return users
+
+    def get_user(self, **kwargs):
+        with self.db_session() as db:
+            user = db.query(User).filter_by(**kwargs)[0]
+        return user
+
+    def add_user(self, **kwargs):
+        with self.db_session() as db:
+            user_object = User(**kwargs)
+            user = db.merge(user_object)
+            db.add(user)
+        #self.db_session.commit()
+        return user
+
+    def update_user(self, user_id, **kwargs):
+        with self.db_session() as db:
+            user = db.query(User).filter_by(**kwargs)[0]
+            for key, value in kwargs.items():
+                setattr(user, key, value)
+        #self.db_session.commit()
+        return user
+    
+    def delete_user(self, **kwargs):
+        with self.db_session() as db:
+            user = db.query(User).filter_by(**kwargs)[0]
+            db.delete(user)
+        #self.db_session.commit()
