@@ -59,7 +59,6 @@ class UserRepository:
             user_object = User(**kwargs)
             user = db.merge(user_object)
             db.add(user)
-        #self.db_session.commit()
         return user
 
     def update_user(self, user_id, **kwargs):
