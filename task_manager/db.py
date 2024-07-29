@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy.orm import sessionmaker, DeclarativeBase, scoped_session
 
 from task_manager.config.base import Config
 
@@ -11,7 +11,11 @@ class ModelBase(DeclarativeBase):
 
 engine = create_engine(Config.DATABASE_URL, echo=False)
 
-Session = sessionmaker(bind=engine)
+#Session = sessionmaker(bind=engine)
+SessionFactory = sessionmaker(bind=engine)
+
+# Создайте объект scoped_session
+Session = scoped_session(SessionFactory)
 
 @contextmanager
 def db_session():

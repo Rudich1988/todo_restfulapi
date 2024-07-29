@@ -10,6 +10,7 @@ from task_manager.routes.schemas.user import UserLoginSchema, UserRegistrationSc
 from task_manager.models.users import User
 from task_manager.config.base import Config
 from task_manager.app import mail
+from task_manager.db import db_session
 
 
 from task_manager.repositories.role_repository import RoleRepository
@@ -18,11 +19,13 @@ from task_manager.db import Session
 
 
 class UserService:
-    def __init__(self, session = UserRepository(),
-                 user_login_schema = UserLoginSchema(),
-                 user_update_schema = UserUpdateSchema(),
-                 user_schema = UserRegistrationSchema(),
-                 users_schema = UserRegistrationSchema(many=True)):
+    def __init__(self, repository=UserRepository,
+                 session=db_session,
+                 user_login_schema=UserLoginSchema(),
+                 user_update_schema=UserUpdateSchema(),
+                 user_schema=UserRegistrationSchema(),
+                 users_schema=UserRegistrationSchema(many=True)):
+        self.repository = repository
         self.session = session
         self._user_schema = user_schema
         self._users_schema = users_schema
@@ -30,7 +33,8 @@ class UserService:
         self._update_schema = user_update_schema
 
     def get_user(self, user_id: int) -> Dict:
-        user = self.session.get_user(**{'id': user_id})
+        with self.session() as s:
+            user = self.repository(s).get_user(**{'id': user_id})
         return self._user_schema.dump(user)
 
     def generate_token(self, email: str) -> str:
@@ -58,33 +62,39 @@ class UserService:
     def confirm_email(self, token: str) -> None:
         email = self.confirm_token(token)
         data = {'email': email}
-        user = self.session.get_user(**data)
+        with self.session() as s:
+            user = self.repository(s).get_user(**data)
         user.is_active = True
-        self.session.update_user(user.id, **data)
+        with self.session() as s:
+            self.repository(s).update_user(user.id, **data)
 
     def add_user(self, data: Dict) -> Dict:
         if data['password1'] == data['password2']:
             data['password'] = User().get_hash_password(data['password1'])
         user_data = self._user_schema.dump(data)
         user_data['user_roles'] = data['user_roles']
-        user = self.session.add_user(**user_data)
+        with self.session() as s:
+            user = self.repository(s).add_user(**user_data)
         self.send_email(user.email)
         return user_data
 
 
     def login_user(self, user_data: Dict) -> Dict:
         data = self._login_schema.dump(user_data)
-        user = self.session.get_user(**data)
-        if user.check_password(user_data['password']) and user.is_active:
-            current_user = user
-        login_user(current_user)
-        return user_data
+        with self.session() as s:
+            user = self.repository(s).get_user(**data)
+            if user.check_password(user_data['password']) and user.is_active:
+                current_user = user
+            login_user(current_user)
+            return user_data
     
     def update_user(self, user_id, data):
         user_data = self._update_schema.dump(data)
-        user = self.session.update_user(user_id, **user_data)
+        with self.session as s:
+            user = self.repository(s).update_user(user_id, **user_data)
         return self._update_schema.dump(user)
     
     def delete_user(self, user_id):
-        self.session.delete_user(**{'id': user_id})
+        with self.session() as s:
+            self.repository(s).delete_user(**{'id': user_id})
         return f'User id: {user_id} deleted'

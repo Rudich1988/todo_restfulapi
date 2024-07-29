@@ -27,7 +27,6 @@ def login():
               #  return render_template('/users/login.html', form=form)
     return render_template('/users/login.html', form=form)
 
-
 @users_bp.route('/logout')
 @login_required
 def logout():
@@ -57,7 +56,7 @@ def registration():
 def get_profile(id):
     form = UserDeleteForm()
     #try:
-    user = UserRepository().get_user(**{'id': id})
+    user = UserService().get_user(id)
     return render_template('users/profile.html', user=user, form=form)
     #except:
      #   flash('Такого пользователя нет')
@@ -68,7 +67,7 @@ def get_profile(id):
 @login_required
 def update_user(id):
     try:
-        user = UserRepository().get_user(**{'id': id})
+        user = UserService().get_user(id)
         form = UserUpdateForm(obj=user)
     except:
         flash('Запрашиваемого пользователя нет', 'error')
@@ -92,7 +91,7 @@ def update_user(id):
 @users_bp.route('/delete_user/<int:id>', methods=['POST'])
 def delete_user(id):
     #try:
-    user = UserRepository().get_user(**{'id': id})
+    user = UserService().get_user(id)
     if current_user.id == user.id:
         UserService().delete_user(id)
         flash('Пользователь успешно удален', 'success')

@@ -36,43 +36,38 @@ class TaskRepository:
         self.db_session.commit()
 '''
 
+
 class TaskRepository:
-    def __init__(self, db_session=db_s):
+    def __init__(self, db_session):
         self.db_session = db_session
 
     def get_all_tasks(self):
-        with self.db_session() as db:
-            tasks = db.query(Task).all()
+        tasks = self.db_session.query(Task).all()
         return tasks
-    
+
     def get_tasks_with_params(self, **kwargs):
-        with self.db_session() as db:
-            tasks = db.query(Task).filter_by(**kwargs)
+        tasks = self.db_session.query(Task).filter_by(**kwargs)
         return tasks
 
     def create_task(self, **kwargs):
-        with self.db_session() as db:
-            task = Task(**kwargs)
-            db.add(task)
-        #self.db_session.commit()
+        task = Task(**kwargs)
+        self.db_session.add(task)
+        self.db_session.commit()
 
     def get_task(self, **kwargs):
-        with self.db_session() as db:
-            task = db.query(Task).filter_by(**kwargs)[0]
+        task = self.db_session.query(Task).filter_by(**kwargs)[0]
         return task
-    
+
     def update_task(self, task_id, **kwargs):
-        with self.db_session() as db:
-            task = db.query(Task).filter_by(**kwargs)[0]
-            for key, value in kwargs.items():
-                setattr(task, key, value)
-        #self.db_session.commit()
+        task = self.get_task(**{'id': task_id})
+        for key, value in kwargs.items():
+            setattr(task, key, value)
+        self.db_session.commit()
         return task
-    
+
     def delete_task(self, **kwargs):
-        with self.db_session() as db:
-            task = db.query(Task).filter_by(**kwargs)[0]
-            db.delete(task)
-        #self.db_session.commit()
+        task = self.get_task(**kwargs)
+        self.db_session.delete(task)
+        self.db_session.commit()
 
 

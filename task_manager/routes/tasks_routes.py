@@ -58,7 +58,7 @@ def get_task(id):
 @login_required
 def update_task(id):
     try:
-        task = TaskRepository().get_task(**{'id': id})
+        task = TaskService().get_task(id)
         form = TaskUpdateForm(obj=task)
     except:
         flash('Запрашиваемой задачи нет', 'error')
@@ -82,7 +82,7 @@ def update_task(id):
 @tasks_bp.route('/delete_task/<int:id>', methods=['POST'])
 def delete_task(id):
     try:
-        task = TaskRepository().get_task(**{'id': id})
+        task = TaskService().get_task(id)
         if current_user.id == task.author:
             TaskService().delete_task(id)
             flash('Задача успешно удалена', 'success')

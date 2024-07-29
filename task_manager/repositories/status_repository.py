@@ -13,17 +13,16 @@ class StatusRepository:
         status = self.db_session.query(Status).filter_by(**kwargs)[0]
         return status
 '''
+
+
 class StatusRepository:
-    def __init__(self, db_session=db_s):
+    def __init__(self, db_session):
         self.db_session = db_session
 
     def get_statuses(self):
-        with self.db_session() as db:
-            statuses = db.query(Status).all()
-        return statuses
-    
+        return self.db_session.query(Status).all()
+
     def get_status(self, **kwargs):
-        with self.db_session() as db:
-            status = db.query(Status).filter_by(**kwargs)[0]
+        status = self.db_session.query(Status).filter_by(**kwargs)[0]
         return status
 
