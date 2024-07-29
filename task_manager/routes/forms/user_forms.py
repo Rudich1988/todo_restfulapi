@@ -26,7 +26,7 @@ class UserCreateForm(FlaskForm):
                               validators=[DataRequired(), Length(6, 200),
                                           EqualTo('password1',
                                                   message='Пароли не совпадают')])
-    user_roles = QuerySelectMultipleField('Roles', query_factory=lambda: RoleRepository(Session()).get_roles(), get_label='title')
+    user_roles = QuerySelectMultipleField('Roles', query_factory=lambda: RoleService().get_roles(), get_label='title')
     submit = SubmitField('Создать', render_kw={"class": "btn btn"})
 
 
@@ -53,7 +53,7 @@ class UserUpdateForm(FlaskForm):
     email = StringField("Email",  validators=[DataRequired(), Email(message='Некорректный email')],
                         render_kw={"placeholder": "Введите адрес электронной почты"})
     about_me = TextAreaField('Обо мне', render_kw={"placeholder": "Расскажите о себе"})
-    user_roles = QuerySelectMultipleField('Roles', query_factory=lambda: RoleRepository(Session()).get_roles(), get_label='title')
+    user_roles = QuerySelectMultipleField('Roles', query_factory=lambda: RoleService().get_roles(), get_label='title')
     submit = SubmitField('Изменить', render_kw={"class": "btn btn"})
 
 
